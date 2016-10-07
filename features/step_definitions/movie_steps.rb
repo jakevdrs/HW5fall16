@@ -52,6 +52,7 @@ Given /the following movies have been added to RottenPotatoes:/ do |movies_table
     # The keys will be the table headers and the values will be the row contents.
     # Entries can be directly to the database with ActiveRecord methods
     # Add the necessary Active Record call(s) to populate the database.
+    Movie.create(movie)
   end
 end
 
@@ -59,15 +60,31 @@ When /^I have opted to see movies rated: "(.*?)"$/ do |arg1|
   # HINT: use String#split to split up the rating_list, then
   # iterate over the ratings and check/uncheck the ratings
   # using the appropriate Capybara command(s)
-  pending  #remove this statement after implementing the test step
+  possRatings = ['G', 'PG', 'PG-13', 'NC-17', 'R']
+  ratingsIn = arg1
+  checkedRatings = ratingsIn.split(", ")
+  uncheckedRatings = possRatings - checkedRatings
+  checkedRatings.each {|r|
+    id = "ratingsIn[" + r + "]"
+    check id
+  }
+  uncheckedRatings.each { |r|
+    id = "ratingsIn[" + r + "]"
+    check id
+  }
+  click_button('ratings_submit')
 end
 
 Then /^I should see only movies rated: "(.*?)"$/ do |arg1|
-  pending  #remove this statement after implementing the test step
+    ratingsIn = arg1
+    checkedRatings = ratingsIn.split(", ")
+    numMovies = Movie.where(:rating => checkedRatings).all.size
+    numMovies.should == ((page.all('table#movies tr').count) - 1)
 end
 
 Then /^I should see all of the movies$/ do
-  pending  #remove this statement after implementing the test step
+  numMovies = Movie.all.size
+  numMovies.should == ((page.all('table#movies tr').count) - 1)
 end
 
 
