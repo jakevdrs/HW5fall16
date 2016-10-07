@@ -87,5 +87,23 @@ Then /^I should see all of the movies$/ do
   numMovies.should == ((page.all('table#movies tr').count) - 1)
 end
 
+When /^I sort on "(.*?)"$/ do |sort|
+    click_link(sort)
+end
 
+Then /^I should see all of the movies sorted by "(.*?)"$/ do |sort|
+    sortList = ""
+    page.all('table#movies td').each {|td|
+        sortList << td.text
+    }
+    sortedList = Movie.order(sort)
+    expectedList = ""
+    sortedList.each {|m|
+        expectedList << m[sort].to_s
+    }
+    expect(sortList == expectedList).to be_truthy
+end
 
+Then /^I should see "(.*?)"$/ do |x, y|
+    expect(page.body =~ /#{x}.*#{y}/m).to be_truthy
+end
