@@ -105,6 +105,6 @@ Then /^I should see all of the movies sorted by "(.*?)"$/ do |sort|
     expect(sortList == expectedList).to be_truthy
 end
 
-Then /^I should see "(.*?)"$/ do |x, y|
+Then /^I should see release date "(.*?)"$/ do |x, y|
     expect(page.body =~ /#{x}.*#{y}/m).to be_truthy
 end

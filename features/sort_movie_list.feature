@@ -33,4 +33,4 @@ Scenario: sort movies in increasing order of release date
   When I have opted to see movies rated: "G, PG, PG-13, NC-17, R"
   And I sort on "release date"
   Then I should see all of the movies sorted by "release date"
-  And I should see "1984-10-26" before "1992-11-25"
+  And I should see release date "1984-10-26" before "1992-11-25"
