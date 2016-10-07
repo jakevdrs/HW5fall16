@@ -46,13 +46,12 @@ Given /^I am on the RottenPotatoes home page$/ do
 # Add a declarative step here for populating the DB with movies.
 
 Given /the following movies have been added to RottenPotatoes:/ do |movies_table|
-  pending  # Remove this statement when you finish implementing the test step
   movies_table.hashes.each do |movie|
     # Each returned movie will be a hash representing one row of the movies_table
     # The keys will be the table headers and the values will be the row contents.
     # Entries can be directly to the database with ActiveRecord methods
     # Add the necessary Active Record call(s) to populate the database.
-    Movie.create(movie)
+    Movie.create movie
   end
 end
 
@@ -61,23 +60,25 @@ When /^I have opted to see movies rated: "(.*?)"$/ do |arg1|
   # iterate over the ratings and check/uncheck the ratings
   # using the appropriate Capybara command(s)
   possRatings = ['G', 'PG', 'PG-13', 'NC-17', 'R']
-  ratingsIn = arg1
-  checkedRatings = ratingsIn.split(", ")
+  ratings = arg1
+  checkedRatings = ratings.split(", ")
+  checkedRatings.uniq! #remove duplicated ratings
   uncheckedRatings = possRatings - checkedRatings
   checkedRatings.each {|r|
-    id = "ratingsIn[" + r + "]"
+    id = "ratings[" + r + "]"
     check id
   }
   uncheckedRatings.each { |r|
-    id = "ratingsIn[" + r + "]"
+    id = "ratings[" + r + "]"
     check id
   }
   click_button('ratings_submit')
 end
 
 Then /^I should see only movies rated: "(.*?)"$/ do |arg1|
-    ratingsIn = arg1
-    checkedRatings = ratingsIn.split(", ")
+    ratings = arg1
+    checkedRatings = ratings.split(", ")
+    checkedRatings.uniq! #remove duplicated ratings
     numMovies = Movie.where(:rating => checkedRatings).all.size
     numMovies.should == ((page.all('table#movies tr').count) - 1)
 end
